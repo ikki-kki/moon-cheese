@@ -21,6 +21,18 @@ export interface GradePointResponse {
   gradePointList: GradePointList[];
 }
 
+type GradeShippingType = 'EXPLORER' | 'PILOT' | 'COMMANDER';
+
+export interface GradeShippingList {
+  type: GradeShippingType;
+  shippingFee: number;
+  freeShippingThreshold: number;
+}
+
+export interface GradeShippingResponse {
+  gradeShippingList: GradeShippingList[];
+}
+
 export type RecentProduct = {
   id: number;
   thumbnail: string;
@@ -70,3 +82,12 @@ export type ProductDetailResponse = Product;
 export interface ProductRecommendIdsResponse {
   recommendProductIds: number[];
 }
+
+export type PurchaseRequest = {
+  deliveryType: 'EXPRESS' | 'PREMIUM';
+  totalPrice: number;
+  items: Array<{
+    productId: number;
+    quantity: number;
+  }>;
+};

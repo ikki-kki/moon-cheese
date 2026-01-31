@@ -6,6 +6,7 @@ import type {
   ProductDetailResponse,
   ProductListResponse,
   ProductRecommendIdsResponse,
+  PurchaseRequest,
   RecentProductListResponse,
 } from './schema';
 
@@ -19,6 +20,10 @@ export const getMe = () => {
 
 export const getGradePoint = () => {
   return http.get<GradePointResponse>('/api/grade/point');
+};
+
+export const getGradeShipping = () => {
+  return http.get<GradePointResponse>('/api/grade/shipping');
 };
 
 export const getRecentProductList = () => {
@@ -35,4 +40,8 @@ export const getProductDetail = (productId: number) => {
 
 export const getProductRecommendIds = (productId: number) => {
   return http.get<ProductRecommendIdsResponse>(`/api/product/recommend/${productId}`);
+};
+
+export const postProductPurchase = (body: PurchaseRequest) => {
+  return http.post<PurchaseRequest, null>(`/api/product/purchase`, body);
 };
