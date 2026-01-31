@@ -1,5 +1,5 @@
-import { Center, styled, VStack } from 'styled-system/jsx';
 import { Button, Text } from '@/ui-lib';
+import { Center, styled, VStack } from 'styled-system/jsx';
 
 type ErrorSectionProps = {
   onRetry?: () => void;
@@ -7,7 +7,7 @@ type ErrorSectionProps = {
 
 function ErrorSection({ onRetry }: ErrorSectionProps) {
   return (
-    <Center p={5} aspectRatio={1} bgColor="background.01_white">
+    <Center p={5} aspectRatio={1} bgColor="background.01_white" borderRadius="lg">
       <VStack gap={4}>
         <VStack gap={2} textAlign="center">
           <styled.img src="/error-image.png" alt="error" w={100} />

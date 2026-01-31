@@ -1,10 +1,10 @@
+import { SECOND } from '@/constants/time';
+import { delay } from '@/shared/utils/async';
+import { Button, Spacing, Text } from '@/ui-lib';
+import { toast } from '@/ui-lib/components/toast';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Divider, Flex, HStack, Stack, styled } from 'styled-system/jsx';
-import { SECOND } from '@/constants/time';
-import { Button, Spacing, Text } from '@/ui-lib';
-import { toast } from '@/ui-lib/components/toast';
-import { delay } from '@/utils/async';
 
 function CheckoutSection() {
   const navigate = useNavigate();

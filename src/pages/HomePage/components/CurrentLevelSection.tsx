@@ -1,7 +1,7 @@
 import ErrorSection from '@/components/ErrorSection';
 import type { GradePointList, GradeType } from '@/shared/api/schema';
-import { gradeQueries } from '@/shared/qureies/grade';
-import { meQueries } from '@/shared/qureies/me';
+import { gradeQueries } from '@/shared/queries/grade';
+import { meQueries } from '@/shared/queries/me';
 import { ProgressBar, Spacing, Text } from '@/ui-lib';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
 import { SuspenseQueries } from '@suspensive/react-query';

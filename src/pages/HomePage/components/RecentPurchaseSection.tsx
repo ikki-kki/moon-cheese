@@ -1,9 +1,11 @@
 import ErrorSection from '@/components/ErrorSection';
 import type { RecentProduct } from '@/shared/api/schema';
-import { productQueries } from '@/shared/qureies/product';
+import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
+import { productQueries } from '@/shared/queries/product';
 import { Spacing, Text } from '@/ui-lib';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
 import { SuspenseQuery } from '@suspensive/react-query';
+import { groupBy, sumBy } from 'es-toolkit';
 import { Flex, styled } from 'styled-system/jsx';
 
 function RecentPurchaseSection() {
@@ -14,8 +16,11 @@ function RecentPurchaseSection() {
       <Spacing size={4} />
       <ErrorBoundary fallback={<ErrorSection />}>
         <Suspense>
-          <SuspenseQuery {...productQueries.recent.product.list()}>
-            {({ data }) => (
+          <SuspenseQuery
+            {...productQueries.recent.product.list()}
+            select={data => mergedRecentProducts(data.recentProducts)}
+          >
+            {({ data: products }) => (
               <Flex
                 css={{
                   bg: 'background.01_white',
@@ -26,7 +31,7 @@ function RecentPurchaseSection() {
                 }}
                 direction={'column'}
               >
-                {data.recentProducts.map(product => (
+                {products.map(product => (
                   <RecentPurchaseItem key={product.id} product={product} />
                 ))}
               </Flex>
@@ -41,6 +46,8 @@ function RecentPurchaseSection() {
 export default RecentPurchaseSection;
 
 function RecentPurchaseItem({ product }: { product: RecentProduct }) {
+  const { format } = useDisplayPriceFormatter();
+
   return (
     <Flex
       css={{
@@ -59,8 +66,19 @@ function RecentPurchaseItem({ product }: { product: RecentProduct }) {
       />
       <Flex flexDir="column" gap={1}>
         <Text variant="B2_Medium">{product.name}</Text>
-        <Text variant="H1_Bold">{product.price}</Text>
+        <Text variant="H1_Bold">{format(product.price)}</Text>
       </Flex>
     </Flex>
   );
 }
+
+const mergeProductGroup = (items: RecentProduct[]): RecentProduct => ({
+  ...items[0],
+  price: sumBy(items, item => item.price),
+});
+
+export const mergedRecentProducts = (products: RecentProduct[]): RecentProduct[] => {
+  const groupedById = groupBy(products, product => product.id);
+
+  return Object.values(groupedById).map(mergeProductGroup);
+};

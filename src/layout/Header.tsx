@@ -1,4 +1,4 @@
-import { useCurrencyStore } from '@/shared/store/currency';
+import { useUserCurrencySettingStore } from '@/shared/store/currency';
 import Badge from '@/ui-lib/components/badge';
 import CurrencyToggle from '@/ui-lib/components/currency-toggle';
 import { ArrowLeftIcon, ShoppingCartIcon } from '@/ui-lib/components/icons';
@@ -8,7 +8,7 @@ import { Flex, styled } from 'styled-system/jsx';
 import { flex } from 'styled-system/patterns';
 
 export function Header() {
-  const { currency, setCurrency } = useCurrencyStore();
+  const { userCurrencySetting, setUserCurrencySetting } = useUserCurrencySettingStore();
   const location = useLocation();
 
   const isRootRoute = location.pathname === '/';
@@ -28,7 +28,7 @@ export function Header() {
     >
       {isRootRoute ? <Logo /> : <BackButton />}
       <Flex alignItems="center" gap={4}>
-        <CurrencyToggle value={currency} onValueChange={setCurrency} />
+        <CurrencyToggle value={userCurrencySetting} onValueChange={setUserCurrencySetting} />
         <ShoppingCartButton />
       </Flex>
     </styled.header>

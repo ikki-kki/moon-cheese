@@ -1,4 +1,4 @@
-import { http } from '@/utils/http';
+import { http } from '@/shared/utils/http';
 import type { ExchangeRateResponse, GradePointResponse, MeResponse, RecentProductListResponse } from './schema';
 
 export const getExchangeRate = async () => {
