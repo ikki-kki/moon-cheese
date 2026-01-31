@@ -1,24 +1,47 @@
-import { SECOND } from '@/constants/time';
-import { delay } from '@/shared/utils/async';
+import type { DeliveryType, PurchaseRequest } from '@/shared/api/schema';
+import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
+import { productMutations } from '@/shared/queries/product';
+import { useCart } from '@/shared/store/cart';
 import { Button, Spacing, Text } from '@/ui-lib';
 import { toast } from '@/ui-lib/components/toast';
-import { useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { Box, Divider, Flex, HStack, Stack, styled } from 'styled-system/jsx';
 
-function CheckoutSection() {
-  const navigate = useNavigate();
-  const [isPurchasing, setIsPurchasing] = useState(false);
+interface Props {
+  shippingFee: number;
+  deliveryMethod: DeliveryType;
+}
 
-  const onClickPurchase = async () => {
-    setIsPurchasing(true);
-    await delay(SECOND * 1);
-    setIsPurchasing(false);
-    toast.success('결제가 완료되었습니다.');
-    await delay(SECOND * 2);
-    navigate('/');
+function CheckoutSection({ shippingFee, deliveryMethod }: Props) {
+  const navigate = useNavigate();
+  const { format } = useDisplayPriceFormatter();
+  const { cart } = useCart();
+
+  const { mutate, isPending } = useMutation({
+    ...productMutations.purchase(),
+    onSuccess: () => {
+      toast.success('결제가 완료되었습니다.');
+      cart.clear();
+      navigate('/');
+    },
+    onError: () => {
+      toast.error('결제에 실패했습니다. 다시 시도해주세요.');
+    },
+  });
+
+  const totalPrice = cart.totalPrice + shippingFee;
+
+  const payload: PurchaseRequest = {
+    deliveryType: deliveryMethod,
+    totalPrice,
+    items: cart.items.map(item => ({
+      productId: item.id,
+      quantity: item.quantity,
+    })),
   };
 
+  console.log(payload);
   return (
     <styled.section css={{ p: 5, bgColor: 'background.01_white' }}>
       <Text variant="H2_Bold">결제금액</Text>
@@ -37,7 +60,7 @@ function CheckoutSection() {
         <Stack gap={5}>
           <Box gap={3}>
             <Flex justify="space-between">
-              <Text variant="B2_Regular">주문금액(3개)</Text>
+              <Text variant="B2_Regular">주문금액({cart.totalQuantity}개)</Text>
               <Text variant="B2_Bold" color="state.green">
                 무료배송
               </Text>
@@ -53,12 +76,12 @@ function CheckoutSection() {
 
           <HStack justify="space-between">
             <Text variant="H2_Bold">총 금액</Text>
-            <Text variant="H2_Bold">$30.59</Text>
+            <Text variant="H2_Bold">{format(totalPrice)}</Text>
           </HStack>
         </Stack>
 
-        <Button fullWidth size="lg" loading={isPurchasing} onClick={onClickPurchase}>
-          {isPurchasing ? '결제 중...' : '결제 진행'}
+        <Button fullWidth size="lg" loading={isPending} onClick={() => mutate(payload)}>
+          {isPending ? '결제 중...' : '결제 진행'}
         </Button>
 
         <Text variant="C2_Regular" color="neutral.03_gray">

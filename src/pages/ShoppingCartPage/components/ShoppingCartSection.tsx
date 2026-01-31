@@ -1,19 +1,19 @@
 import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
-import { useCartStore } from '@/shared/store/cart';
+import { useCart } from '@/shared/store/cart';
 import Joiner from '@/shared/ui/Joiner';
 import { Button, Counter, Spacing, Text, type TagType } from '@/ui-lib';
 import { Divider, Flex, Stack, styled } from 'styled-system/jsx';
 import ShoppingCartItem from './ShoppingCartItem';
 
 function ShoppingCartSection() {
-  const { cartItems, removeFromCart, clearCart, increaseQuantity, decreaseQuantity } = useCartStore();
+  const { cart } = useCart();
   const { format } = useDisplayPriceFormatter();
 
   return (
     <styled.section css={{ p: 5, bgColor: 'background.01_white' }}>
       <Flex justify="space-between">
         <Text variant="H2_Bold">장바구니</Text>
-        <Button onClick={clearCart} color={'neutral'} size="sm">
+        <Button onClick={cart.clear} color={'neutral'} size="sm">
           전체삭제
         </Button>
       </Flex>
@@ -29,7 +29,7 @@ function ShoppingCartSection() {
       >
         <Joiner
           divider={<Divider color="border.01_gray" />}
-          components={cartItems.map(item => (
+          components={cart.items.map(item => (
             <ShoppingCartItem.Root>
               <ShoppingCartItem.Image src={item.images[0]} alt={item.name} />
               <ShoppingCartItem.Content>
@@ -37,7 +37,7 @@ function ShoppingCartSection() {
                   type={item.category.toLowerCase() as TagType}
                   title={item.name}
                   description={item.description}
-                  onDelete={() => removeFromCart(item.id)}
+                  onDelete={() => cart.remove(item.id)}
                 />
                 <ShoppingCartItem.Footer>
                   <ShoppingCartItem.Price>{format(item.price)}</ShoppingCartItem.Price>
@@ -45,8 +45,8 @@ function ShoppingCartSection() {
                     quantity={item.quantity}
                     min={0}
                     max={item.stock}
-                    increase={() => increaseQuantity(item.id)}
-                    decrease={() => decreaseQuantity(item.id)}
+                    increase={() => cart.increase(item.id)}
+                    decrease={() => cart.decrease(item.id)}
                   />
                 </ShoppingCartItem.Footer>
               </ShoppingCartItem.Content>

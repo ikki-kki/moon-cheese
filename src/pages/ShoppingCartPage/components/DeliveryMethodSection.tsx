@@ -1,15 +1,16 @@
-import type { GradeShippingList } from '@/shared/api/schema';
+import type { DeliveryType } from '@/shared/api/schema';
 import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { Spacing, Text } from '@/ui-lib';
 import { DeliveryIcon, RocketIcon } from '@/ui-lib/components/icons';
-import { useState } from 'react';
 import { Flex, Stack, styled } from 'styled-system/jsx';
 
-type DeliveryMethod = 'Express' | 'Premium';
+interface Props {
+  value: DeliveryType;
+  onClick: React.Dispatch<React.SetStateAction<DeliveryType>>;
+  shippingFee: number;
+}
 
-function DeliveryMethodSection({ shipping }: { shipping: GradeShippingList }) {
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<DeliveryMethod>('Express');
-
+function DeliveryMethodSection({ shippingFee, value, onClick }: Props) {
   return (
     <styled.section css={{ p: 5, bgColor: 'background.01_white' }}>
       <Text variant="H2_Bold">배송 방식</Text>
@@ -22,16 +23,16 @@ function DeliveryMethodSection({ shipping }: { shipping: GradeShippingList }) {
           description="3-5일 후 도착 예정"
           icon={<DeliveryIcon size={28} />}
           price={0}
-          isSelected={selectedDeliveryMethod === 'Express'}
-          onClick={() => setSelectedDeliveryMethod('Express')}
+          isSelected={value === 'EXPRESS'}
+          onClick={() => onClick('EXPRESS')}
         />
         <DeliveryItem
           title="Premium"
           description="당일 배송"
           icon={<RocketIcon size={28} />}
-          price={shipping.shippingFee}
-          isSelected={selectedDeliveryMethod === 'Premium'}
-          onClick={() => setSelectedDeliveryMethod('Premium')}
+          price={shippingFee}
+          isSelected={value === 'PREMIUM'}
+          onClick={() => onClick('PREMIUM')}
         />
       </Stack>
     </styled.section>

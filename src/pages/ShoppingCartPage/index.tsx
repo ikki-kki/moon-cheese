@@ -11,7 +11,6 @@ import CheckoutSection from './components/CheckoutSection';
 import DeliveryMethodSection from './components/DeliveryMethodSection';
 import EmptyCartSection from './components/EmptyCartSection';
 import ShoppingCartSection from './components/ShoppingCartSection';
-import { useCheckoutSummary } from './hooks/useCheckoutSummary';
 
 const NAVBAR_HEIGHT = 56;
 
@@ -39,20 +38,25 @@ function ShoppingCartPage() {
 
 const PaymentSection = () => {
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<DeliveryType>('EXPRESS');
-  const { gradeShippingList } = useCheckoutSummary(selectedDeliveryMethod);
+  const { cart } = useCart();
+
   return (
     <SuspenseQueries queries={[gradeQueries.shipping(), meQueries.me()]}>
       {([{ data: shipping }, { data: me }]) => {
         const myShipping = getMyShippingData(shipping.gradeShippingList, me.grade);
-
+        const shippingFee = calculateShippingFee({
+          shipping: myShipping,
+          deliveryType: selectedDeliveryMethod,
+          itemTotalPrice: cart.totalPrice,
+        });
         return (
           <>
             <DeliveryMethodSection
-              shipping={myShipping}
+              shippingFee={shippingFee}
               value={selectedDeliveryMethod}
               onClick={setSelectedDeliveryMethod}
             />
-            <CheckoutSection shipping={myShipping} deliveryMethod={selectedDeliveryMethod} />
+            <CheckoutSection shippingFee={shippingFee} deliveryMethod={selectedDeliveryMethod} />
           </>
         );
       }}
@@ -64,4 +68,24 @@ export default ShoppingCartPage;
 
 const getMyShippingData = (gradeShippingList: GradeShippingList[], myGrade: GradeType) => {
   return gradeShippingList.find(item => item.type === myGrade) || gradeShippingList[0];
+};
+
+const calculateShippingFee = ({
+  shipping,
+  deliveryType,
+  itemTotalPrice,
+}: {
+  shipping: GradeShippingList;
+  deliveryType: DeliveryType;
+  itemTotalPrice: number;
+}) => {
+  const isFreeShipping = itemTotalPrice >= shipping.freeShippingThreshold;
+
+  if (deliveryType === 'EXPRESS') {
+    return 0;
+  }
+  if (isFreeShipping) {
+    return 0;
+  }
+  return shipping.shippingFee;
 };
