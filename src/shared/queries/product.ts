@@ -38,10 +38,8 @@ export const productQueries = {
 };
 
 export const productMutations = {
-  purchase: (body: PurchaseRequest) => {
+  purchase: () =>
     mutationOptions({
-      mutationKey: ['product', 'purchase', body],
-      mutationFn: () => postProductPurchase(body),
-    });
-  },
+      mutationFn: (payload: PurchaseRequest) => postProductPurchase(payload),
+    }),
 };

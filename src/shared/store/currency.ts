@@ -7,7 +7,7 @@ interface UserCurrencySettingStore {
   setUserCurrencySetting: (currency: CurrencyType) => void;
 }
 
-export const useUserCurrencySettingStore = create<UserCurrencySettingStore>()(
+const useUserCurrencySettingStore = create<UserCurrencySettingStore>()(
   persist(
     set => ({
       userCurrencySetting: 'KRW',
@@ -19,3 +19,14 @@ export const useUserCurrencySettingStore = create<UserCurrencySettingStore>()(
     }
   )
 );
+
+export const useUserCurrencySetting = () => {
+  const { userCurrencySetting, setUserCurrencySetting } = useUserCurrencySettingStore();
+
+  return {
+    currency: {
+      value: userCurrencySetting,
+      set: setUserCurrencySetting,
+    },
+  };
+};

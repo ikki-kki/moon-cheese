@@ -1,19 +1,19 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { currencyQueries } from '../queries/currency';
-import { useUserCurrencySettingStore } from '../store/currency';
+import { useUserCurrencySetting } from '../store/currency';
 
 export const useDisplayPriceFormatter = () => {
-  const { userCurrencySetting } = useUserCurrencySettingStore();
+  const { currency } = useUserCurrencySetting();
   const { data: currencyRates } = useSuspenseQuery({
     ...currencyQueries.rate(),
     select: data => data.exchangeRate,
   });
 
   const format = (price: number) => {
-    const rate = currencyRates[userCurrencySetting];
+    const rate = currencyRates[currency.value];
     const convertedPrice = price * rate;
 
-    switch (userCurrencySetting) {
+    switch (currency.value) {
       case 'KRW':
         return `${Math.floor(convertedPrice).toLocaleString('ko-KR')}원`;
 

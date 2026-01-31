@@ -1,5 +1,5 @@
-import { useCartStore } from '@/shared/store/cart';
-import { useUserCurrencySettingStore } from '@/shared/store/currency';
+import { useCart } from '@/shared/store/cart';
+import { useUserCurrencySetting } from '@/shared/store/currency';
 import Badge from '@/ui-lib/components/badge';
 import CurrencyToggle from '@/ui-lib/components/currency-toggle';
 import { ArrowLeftIcon, ShoppingCartIcon } from '@/ui-lib/components/icons';
@@ -9,7 +9,7 @@ import { Flex, styled } from 'styled-system/jsx';
 import { flex } from 'styled-system/patterns';
 
 export function Header() {
-  const { userCurrencySetting, setUserCurrencySetting } = useUserCurrencySettingStore();
+  const { currency } = useUserCurrencySetting();
   const location = useLocation();
 
   const isRootRoute = location.pathname === '/';
@@ -29,7 +29,7 @@ export function Header() {
     >
       {isRootRoute ? <Logo /> : <BackButton />}
       <Flex alignItems="center" gap={4}>
-        <CurrencyToggle value={userCurrencySetting} onValueChange={setUserCurrencySetting} />
+        <CurrencyToggle value={currency.value} onValueChange={currency.set} />
         <ShoppingCartButton />
       </Flex>
     </styled.header>
@@ -48,10 +48,10 @@ function BackButton() {
 
 function ShoppingCartButton() {
   const navigate = useNavigate();
-  const { cartItems } = useCartStore();
+  const { cart } = useCart();
 
   return (
-    <Badge content={cartItems.length} size="sm" cursor="pointer" onClick={() => navigate('/shopping-cart')}>
+    <Badge content={cart.items.length} size="sm" cursor="pointer" onClick={() => navigate('/shopping-cart')}>
       <ShoppingCartIcon size={22} />
     </Badge>
   );

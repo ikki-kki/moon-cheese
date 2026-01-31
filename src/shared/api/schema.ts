@@ -83,8 +83,10 @@ export interface ProductRecommendIdsResponse {
   recommendProductIds: number[];
 }
 
+export type DeliveryType = 'EXPRESS' | 'PREMIUM';
+
 export type PurchaseRequest = {
-  deliveryType: 'EXPRESS' | 'PREMIUM';
+  deliveryType: DeliveryType;
   totalPrice: number;
   items: Array<{
     productId: number;

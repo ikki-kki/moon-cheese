@@ -1,6 +1,6 @@
 import type { ProductDetailResponse } from '@/shared/api/schema';
 import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
-import { useCartStore } from '@/shared/store/cart';
+import { useCart } from '@/shared/store/cart';
 import { Button, Counter, RatingGroup, Spacing, Text } from '@/ui-lib';
 import Tag, { type TagType } from '@/ui-lib/components/tag';
 import { useState } from 'react';
@@ -32,19 +32,19 @@ function ProductInfoSection({ product }: ProductInfoSectionProps) {
 }
 
 const CartActionArea = ({ product }: { product: ProductDetailResponse }) => {
-  const { cartItems, addToCart, removeFromCart } = useCartStore();
+  const { cart } = useCart();
 
-  const cartItem = cartItems.find(p => p.id === product.id);
+  const cartItem = cart.items.find(p => p.id === product.id);
   const isInCart = Boolean(cartItem);
 
   const [localQuantity, setLocalQuantity] = useState(cartItem?.quantity ?? 0);
 
   const handleButtonClick = () => {
     if (isInCart) {
-      removeFromCart(product.id);
+      cart.remove(product.id);
       setLocalQuantity(0);
     } else {
-      addToCart(product, localQuantity);
+      cart.add(product, localQuantity);
     }
   };
 

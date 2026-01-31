@@ -1,6 +1,6 @@
+import type { Product } from '@/shared/api/schema';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import type { Product } from '../api/schema';
 
 export type CartItem = Product & {
   quantity: number;
@@ -15,7 +15,7 @@ interface CartStore {
   clearCart: () => void;
 }
 
-export const useCartStore = create<CartStore>()(
+const useCartStore = create<CartStore>()(
   persist(
     set => ({
       cartItems: [],
@@ -59,3 +59,24 @@ export const useCartStore = create<CartStore>()(
     }
   )
 );
+
+export const useCart = () => {
+  const { cartItems, addToCart, removeFromCart, increaseQuantity, decreaseQuantity, clearCart } = useCartStore();
+
+  const totalQuantity = cartItems.reduce((acc, cur) => acc + cur.quantity, 0);
+  const totalPrice = cartItems.reduce((acc, cur) => acc + cur.price * cur.quantity, 0);
+
+  return {
+    cart: {
+      items: cartItems,
+      totalQuantity,
+      totalPrice,
+
+      add: addToCart,
+      remove: removeFromCart,
+      increase: increaseQuantity,
+      decrease: decreaseQuantity,
+      clear: clearCart,
+    },
+  };
+};

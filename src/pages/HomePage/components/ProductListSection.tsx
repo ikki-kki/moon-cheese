@@ -2,7 +2,7 @@ import ErrorSection from '@/components/ErrorSection';
 import type { Product, ProductCategory } from '@/shared/api/schema';
 import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { productQueries } from '@/shared/queries/product';
-import { useCartStore } from '@/shared/store/cart';
+import { useCart } from '@/shared/store/cart';
 import { Counter, SubGNB, Text } from '@/ui-lib';
 import { ErrorBoundary } from '@suspensive/react';
 import { SuspenseQuery } from '@suspensive/react-query';
@@ -83,13 +83,13 @@ const ProductListItem = ({ product }: { product: Product }) => {
 };
 
 const CartActionArea = ({ product }: { product: Product }) => {
-  const { cartItems, addToCart, increaseQuantity, decreaseQuantity } = useCartStore();
+  const { cart } = useCart();
 
-  const cartItem = cartItems.find(p => p.id === product.id);
+  const cartItem = cart.items.find(p => p.id === product.id);
   const quantity = cartItem?.quantity ?? 0;
 
-  const handleIncrease = () => (quantity === 0 ? addToCart(product, 1) : increaseQuantity(product.id));
-  const handleDecrease = () => decreaseQuantity(product.id);
+  const handleIncrease = () => (quantity === 0 ? cart.add(product, 1) : cart.increase(product.id));
+  const handleDecrease = () => cart.decrease(product.id);
 
   return (
     <QuantitiyCounter
