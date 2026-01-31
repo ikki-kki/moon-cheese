@@ -64,3 +64,5 @@ export type Product = CheeseProduct | CrackerProduct | TeaProduct;
 export interface ProductListResponse {
   products: Product[];
 }
+
+export type ProductDetailResponse = Product;

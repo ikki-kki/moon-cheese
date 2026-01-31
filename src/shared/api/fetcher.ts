@@ -3,26 +3,35 @@ import type {
   ExchangeRateResponse,
   GradePointResponse,
   MeResponse,
+  ProductDetailResponse,
   ProductListResponse,
   RecentProductListResponse,
 } from './schema';
 
-export const getExchangeRate = async () => {
+export const getExchangeRate = () => {
   return http.get<ExchangeRateResponse>('/api/exchange-rate');
 };
 
-export const getMe = async () => {
+export const getMe = () => {
   return http.get<MeResponse>('/api/me');
 };
 
-export const getGradePoint = async () => {
+export const getGradePoint = () => {
   return http.get<GradePointResponse>('/api/grade/point');
 };
 
-export const getRecentProductList = async () => {
+export const getRecentProductList = () => {
   return http.get<RecentProductListResponse>('/api/recent/product/list');
 };
 
-export const getProductList = async () => {
+export const getProductList = () => {
   return http.get<ProductListResponse>('/api/product/list');
+};
+
+export const getProductDetail = (productId: number) => {
+  return http.get<ProductDetailResponse>(`/api/product/${productId}`);
+};
+
+export const getProductRecommendIds = (productId: number) => {
+  return http.get<ProductDetailResponse>(`/api/product/recommend/${productId}`);
 };
