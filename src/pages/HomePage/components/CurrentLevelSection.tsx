@@ -17,7 +17,7 @@ function CurrentLevelSection() {
 
       <ErrorBoundary fallback={<ErrorSection />}>
         <Suspense>
-          <SuspenseQueries queries={[meQueries.current(), gradeQueries.point()]}>
+          <SuspenseQueries queries={[meQueries.me(), gradeQueries.point()]}>
             {([{ data: meData }, { data: pointData }]) => {
               const nextGrade = findNextGrade({
                 currentGrade: meData.grade,

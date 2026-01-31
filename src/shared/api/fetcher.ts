@@ -2,6 +2,7 @@ import { http } from '@/shared/utils/http';
 import type {
   ExchangeRateResponse,
   GradePointResponse,
+  GradeShippingResponse,
   MeResponse,
   ProductDetailResponse,
   ProductListResponse,
@@ -23,7 +24,7 @@ export const getGradePoint = () => {
 };
 
 export const getGradeShipping = () => {
-  return http.get<GradePointResponse>('/api/grade/shipping');
+  return http.get<GradeShippingResponse>('/api/grade/shipping');
 };
 
 export const getRecentProductList = () => {

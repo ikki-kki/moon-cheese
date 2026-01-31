@@ -1,6 +1,10 @@
 import ErrorSection from '@/components/ErrorSection';
+import type { GradeShippingList, GradeType } from '@/shared/api/schema';
+import { gradeQueries } from '@/shared/queries/grade';
+import { meQueries } from '@/shared/queries/me';
 import { useCartStore } from '@/shared/store/cart';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
+import { SuspenseQueries } from '@suspensive/react-query';
 import { styled } from 'styled-system/jsx';
 import CheckoutSection from './components/CheckoutSection';
 import DeliveryMethodSection from './components/DeliveryMethodSection';
@@ -12,22 +16,32 @@ function ShoppingCartPage() {
   const isCartEmpty = cartItems.length === 0;
 
   return (
-    <ErrorBoundary fallback={<ErrorSection />}>
-      <Suspense>
-        <styled.section css={{ bgColor: 'background.01_white', minHeight: '100vh' }}>
+    <styled.section css={{ bgColor: 'background.01_white', minHeight: '100vh' }}>
+      <ErrorBoundary fallback={<ErrorSection />}>
+        <Suspense>
           {isCartEmpty ? (
             <EmptyCartSection />
           ) : (
             <>
               <ShoppingCartSection />
-              <DeliveryMethodSection />
+              <SuspenseQueries queries={[gradeQueries.shipping(), meQueries.me()]}>
+                {([{ data: shipping }, { data: me }]) => {
+                  const myShipping = getMyShippingData(shipping.gradeShippingList, me.grade);
+
+                  return <DeliveryMethodSection shipping={myShipping} />;
+                }}
+              </SuspenseQueries>
               <CheckoutSection />
             </>
           )}
-        </styled.section>
-      </Suspense>
-    </ErrorBoundary>
+        </Suspense>
+      </ErrorBoundary>
+    </styled.section>
   );
 }
 
 export default ShoppingCartPage;
+
+const getMyShippingData = (gradeShippingList: GradeShippingList[], myGrade: GradeType) => {
+  return gradeShippingList.find(item => item.type === myGrade) || gradeShippingList[0];
+};

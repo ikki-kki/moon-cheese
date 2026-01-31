@@ -1,10 +1,14 @@
-import { useState } from 'react';
-import { Flex, Stack, styled } from 'styled-system/jsx';
+import type { GradeShippingList } from '@/shared/api/schema';
+import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { Spacing, Text } from '@/ui-lib';
 import { DeliveryIcon, RocketIcon } from '@/ui-lib/components/icons';
+import { useState } from 'react';
+import { Flex, Stack, styled } from 'styled-system/jsx';
 
-function DeliveryMethodSection() {
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<string>('Express');
+type DeliveryMethod = 'Express' | 'Premium';
+
+function DeliveryMethodSection({ shipping }: { shipping: GradeShippingList }) {
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<DeliveryMethod>('Express');
 
   return (
     <styled.section css={{ p: 5, bgColor: 'background.01_white' }}>
@@ -25,7 +29,7 @@ function DeliveryMethodSection() {
           title="Premium"
           description="당일 배송"
           icon={<RocketIcon size={28} />}
-          price={5}
+          price={shipping.shippingFee}
           isSelected={selectedDeliveryMethod === 'Premium'}
           onClick={() => setSelectedDeliveryMethod('Premium')}
         />
@@ -49,6 +53,8 @@ function DeliveryItem({
   isSelected: boolean;
   onClick: () => void;
 }) {
+  const { format } = useDisplayPriceFormatter();
+
   return (
     <Flex
       gap={3}
@@ -76,7 +82,7 @@ function DeliveryItem({
         </Text>
       </Flex>
       <Text variant="B2_Medium" fontWeight={'semibold'} color={isSelected ? 'neutral.05_white' : 'neutral.01_black'}>
-        {price ? `$${price}` : '무료'}
+        {price ? `${format(price)}` : '무료'}
       </Text>
     </Flex>
   );
