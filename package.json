@@ -54,7 +54,8 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.7.1",
-    "yarn": "^1.22.22"
+    "yarn": "^1.22.22",
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
