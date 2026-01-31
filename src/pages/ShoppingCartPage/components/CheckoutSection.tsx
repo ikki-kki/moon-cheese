@@ -41,7 +41,6 @@ function CheckoutSection({ shippingFee, deliveryMethod }: Props) {
     })),
   };
 
-  console.log(payload);
   return (
     <styled.section css={{ p: 5, bgColor: 'background.01_white' }}>
       <Text variant="H2_Bold">결제금액</Text>
