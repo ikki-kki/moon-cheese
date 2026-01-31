@@ -12,18 +12,22 @@ export interface MeResponse {
   grade: GradeType;
 }
 
-export interface GradePointResponse {
-  gradePointList: Array<{
-    type: GradeType;
-    minPoint: number;
-  }>;
+export interface GradePointList {
+  type: GradeType;
+  minPoint: number;
 }
 
+export interface GradePointResponse {
+  gradePointList: GradePointList[];
+}
+
+export type RecentProduct = {
+  id: number;
+  thumbnail: string;
+  name: string;
+  price: number;
+};
+
 export interface RecentProductListResponse {
-  recentProducts: Array<{
-    id: number;
-    thumbnail: string;
-    name: string;
-    price: number;
-  }>;
+  recentProducts: RecentProduct[];
 }

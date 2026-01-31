@@ -1,5 +1,5 @@
 import ErrorSection from '@/components/ErrorSection';
-import type { GradePointResponse, GradeType } from '@/shared/api/schema';
+import type { GradePointList, GradeType } from '@/shared/api/schema';
 import { gradeQueries } from '@/shared/qureies/grade';
 import { meQueries } from '@/shared/qureies/me';
 import { ProgressBar, Spacing, Text } from '@/ui-lib';
@@ -74,7 +74,7 @@ export const findNextGrade = ({
   gradePointList,
 }: {
   currentGrade: GradeType;
-  gradePointList: GradePointResponse['gradePointList'];
+  gradePointList: GradePointList[];
 }) => {
   const currentMin = gradePointList.find(g => g.type === currentGrade)?.minPoint ?? 0;
 
