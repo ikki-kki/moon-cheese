@@ -5,6 +5,7 @@ import type {
   MeResponse,
   ProductDetailResponse,
   ProductListResponse,
+  ProductRecommendIdsResponse,
   RecentProductListResponse,
 } from './schema';
 
@@ -33,5 +34,5 @@ export const getProductDetail = (productId: number) => {
 };
 
 export const getProductRecommendIds = (productId: number) => {
-  return http.get<ProductDetailResponse>(`/api/product/recommend/${productId}`);
+  return http.get<ProductRecommendIdsResponse>(`/api/product/recommend/${productId}`);
 };

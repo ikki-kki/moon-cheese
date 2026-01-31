@@ -66,3 +66,7 @@ export interface ProductListResponse {
 }
 
 export type ProductDetailResponse = Product;
+
+export interface ProductRecommendIdsResponse {
+  recommendProductIds: number[];
+}
