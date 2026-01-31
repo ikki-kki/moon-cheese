@@ -1,5 +1,11 @@
 import { http } from '@/shared/utils/http';
-import type { ExchangeRateResponse, GradePointResponse, MeResponse, RecentProductListResponse } from './schema';
+import type {
+  ExchangeRateResponse,
+  GradePointResponse,
+  MeResponse,
+  ProductListResponse,
+  RecentProductListResponse,
+} from './schema';
 
 export const getExchangeRate = async () => {
   return http.get<ExchangeRateResponse>('/api/exchange-rate');
@@ -15,4 +21,8 @@ export const getGradePoint = async () => {
 
 export const getRecentProductList = async () => {
   return http.get<RecentProductListResponse>('/api/recent/product/list');
+};
+
+export const getProductList = async () => {
+  return http.get<ProductListResponse>('/api/product/list');
 };

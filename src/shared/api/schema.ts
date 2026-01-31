@@ -31,3 +31,36 @@ export type RecentProduct = {
 export interface RecentProductListResponse {
   recentProducts: RecentProduct[];
 }
+
+export type ProductCategory = 'CHEESE' | 'CRACKER' | 'TEA';
+
+interface BaseProduct {
+  id: number;
+  name: string;
+  stock: number;
+  price: number;
+  description: string;
+  detailDescription: string;
+  images: string[];
+  rating: number;
+}
+
+interface CheeseProduct extends BaseProduct {
+  category: 'CHEESE';
+}
+
+interface CrackerProduct extends BaseProduct {
+  category: 'CRACKER';
+  isGlutenFree: boolean;
+}
+
+interface TeaProduct extends BaseProduct {
+  category: 'TEA';
+  isCaffeineFree: boolean;
+}
+
+export type Product = CheeseProduct | CrackerProduct | TeaProduct;
+
+export interface ProductListResponse {
+  products: Product[];
+}

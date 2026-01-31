@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getRecentProductList } from '../api/fetcher';
+import { getProductList, getRecentProductList } from '../api/fetcher';
 
 export const productQueries = {
   recent: {
@@ -10,5 +10,12 @@ export const productQueries = {
           queryFn: () => getRecentProductList(),
         }),
     },
+  },
+  product: {
+    list: () =>
+      queryOptions({
+        queryKey: ['product', 'list'],
+        queryFn: () => getProductList(),
+      }),
   },
 };
