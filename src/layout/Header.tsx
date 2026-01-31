@@ -48,10 +48,10 @@ function BackButton() {
 
 function ShoppingCartButton() {
   const navigate = useNavigate();
-  const { products } = useCartStore();
+  const { cartItems } = useCartStore();
 
   return (
-    <Badge content={products.length} size="sm" cursor="pointer" onClick={() => navigate('/shopping-cart')}>
+    <Badge content={cartItems.length} size="sm" cursor="pointer" onClick={() => navigate('/shopping-cart')}>
       <ShoppingCartIcon size={22} />
     </Badge>
   );

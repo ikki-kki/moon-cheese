@@ -50,6 +50,7 @@ function ProductListSection() {
 
 const ProductListItem = ({ product }: { product: Product }) => {
   const navigate = useNavigate();
+
   const { format } = useDisplayPriceFormatter();
 
   const handleClickProduct = (productId: number) => {
@@ -62,7 +63,7 @@ const ProductListItem = ({ product }: { product: Product }) => {
       <ProductItem.Info title={product.name} description={product.description} />
       <ProductItem.Meta>
         <ProductItem.MetaLeft>
-          <ProductItem.Rating rating={4} />
+          <ProductItem.Rating rating={product.rating} />
           <ProductItem.Price>{format(product.price)}</ProductItem.Price>
         </ProductItem.MetaLeft>
         {(() => {
@@ -76,24 +77,54 @@ const ProductListItem = ({ product }: { product: Product }) => {
           }
         })()}
       </ProductItem.Meta>
-      <CounterProduct product={product} />
+      <CartActionArea product={product} />
     </ProductItem.Root>
   );
 };
 
-const CounterProduct = ({ product }: { product: Product }) => {
-  const { products, addToCart, removeFromCart } = useCartStore();
+const CartActionArea = ({ product }: { product: Product }) => {
+  const { cartItems, addToCart, increaseQuantity, decreaseQuantity } = useCartStore();
 
-  const removeDisabled = !products.find(p => p.id === product.id);
-  const addDisabled = product.stock <= products.filter(p => p.id === product.id).length;
+  const cartItem = cartItems.find(p => p.id === product.id);
+  const quantity = cartItem?.quantity ?? 0;
 
-  const amount = products.filter(p => p.id === product.id).length;
+  const handleIncrease = () => (quantity === 0 ? addToCart(product, 1) : increaseQuantity(product.id));
+  const handleDecrease = () => decreaseQuantity(product.id);
+
+  return (
+    <QuantitiyCounter
+      min={0}
+      max={product.stock}
+      quantity={quantity}
+      increase={handleIncrease}
+      decrease={handleDecrease}
+    />
+  );
+};
+
+const QuantitiyCounter = ({
+  min,
+  max,
+  disabled,
+  quantity,
+  increase,
+  decrease,
+}: {
+  min: number;
+  max: number;
+  disabled?: boolean;
+  quantity: number;
+  increase: () => void;
+  decrease: () => void;
+}) => {
+  const isMinusDisabled = disabled || quantity <= min;
+  const isPlusDisabled = disabled || quantity >= max;
 
   return (
     <Counter.Root>
-      <Counter.Minus onClick={() => removeFromCart(product.id)} disabled={removeDisabled} />
-      <Counter.Display value={amount} />
-      <Counter.Plus onClick={() => addToCart(product)} disabled={addDisabled} />
+      <Counter.Minus onClick={decrease} disabled={isMinusDisabled} />
+      <Counter.Display value={quantity} />
+      <Counter.Plus onClick={increase} disabled={isPlusDisabled} />
     </Counter.Root>
   );
 };
