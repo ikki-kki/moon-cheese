@@ -1,5 +1,5 @@
-import { Center, styled, VStack } from 'styled-system/jsx';
 import { Button, Text } from '@/ui-lib';
+import { Center, styled, VStack } from 'styled-system/jsx';
 
 function EmptyCartSection() {
   return (

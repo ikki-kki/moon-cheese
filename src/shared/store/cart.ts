@@ -12,6 +12,7 @@ interface CartStore {
   removeFromCart: (productId: number) => void;
   increaseQuantity: (productId: number) => void;
   decreaseQuantity: (productId: number) => void;
+  clearCart: () => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -49,6 +50,8 @@ export const useCartStore = create<CartStore>()(
             .map(item => (item.id === id ? { ...item, quantity: item.quantity - 1 } : item))
             .filter(item => item.quantity > 0),
         })),
+
+      clearCart: () => set({ cartItems: [] }),
     }),
     {
       name: 'cart-store',

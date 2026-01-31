@@ -62,6 +62,7 @@ const CartActionArea = ({ product }: { product: ProductDetailResponse }) => {
           quantity={localQuantity}
           min={0}
           max={product.stock}
+          disabled={isInCart}
           increase={() => setLocalQuantity(prev => prev + 1)}
           decrease={() => setLocalQuantity(prev => Math.max(0, prev - 1))}
         />
