@@ -1,5 +1,5 @@
-import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { useCart, type CartItemType } from '@/shared/store/cart';
+import { FormattedPrice } from '@/shared/ui/FormattedPrice';
 import Joiner from '@/shared/ui/Joiner';
 import { QuantitiyCounter } from '@/shared/ui/QuantitiyCounter';
 import { Button, Spacing, Text, type TagType } from '@/ui-lib';
@@ -40,7 +40,6 @@ export function ShoppingCartSection() {
 
 function CartItem({ item }: { item: CartItemType }) {
   const { cart } = useCart();
-  const { format } = useDisplayPriceFormatter();
 
   return (
     <ShoppingCartItem.Root>
@@ -53,7 +52,9 @@ function CartItem({ item }: { item: CartItemType }) {
           onDelete={() => cart.remove(item.id)}
         />
         <ShoppingCartItem.Footer>
-          <ShoppingCartItem.Price>{format(item.price)}</ShoppingCartItem.Price>
+          <ShoppingCartItem.Price>
+            <FormattedPrice price={item.price} />
+          </ShoppingCartItem.Price>
           <QuantitiyCounter
             quantity={item.quantity}
             min={0}

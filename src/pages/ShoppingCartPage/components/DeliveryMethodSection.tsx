@@ -1,5 +1,5 @@
 import type { DeliveryType } from '@/shared/api/schema';
-import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
+import { FormattedPrice } from '@/shared/ui/FormattedPrice';
 import { Spacing, Text } from '@/ui-lib';
 import { DeliveryIcon, RocketIcon } from '@/ui-lib/components/icons';
 import { Flex, Stack, styled } from 'styled-system/jsx';
@@ -54,8 +54,6 @@ function DeliveryItem({
   isSelected: boolean;
   onClick: () => void;
 }) {
-  const { format } = useDisplayPriceFormatter();
-
   return (
     <Flex
       gap={3}
@@ -83,7 +81,7 @@ function DeliveryItem({
         </Text>
       </Flex>
       <Text variant="B2_Medium" fontWeight={'semibold'} color={isSelected ? 'neutral.05_white' : 'neutral.01_black'}>
-        {price ? `${format(price)}` : '무료'}
+        {price ? <FormattedPrice price={price} /> : '무료'}
       </Text>
     </Flex>
   );

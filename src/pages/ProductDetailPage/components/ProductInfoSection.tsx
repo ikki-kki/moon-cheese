@@ -1,6 +1,6 @@
 import type { ProductDetailResponse } from '@/shared/api/schema';
-import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { useCart } from '@/shared/store/cart';
+import { FormattedPrice } from '@/shared/ui/FormattedPrice';
 import { QuantitiyCounter } from '@/shared/ui/QuantitiyCounter';
 import { Button, RatingGroup, Spacing, Text } from '@/ui-lib';
 import Tag, { type TagType } from '@/ui-lib/components/tag';
@@ -12,8 +12,6 @@ interface Props {
 }
 
 export function ProductInfoSection({ product }: Props) {
-  const { format } = useDisplayPriceFormatter();
-
   return (
     <styled.section css={{ bg: 'background.01_white', p: 5 }}>
       <Box>
@@ -23,7 +21,9 @@ export function ProductInfoSection({ product }: Props) {
           <RatingGroup value={product.rating} readOnly label={`${product.rating.toFixed(1)}`} />
         </Stack>
         <Spacing size={4} />
-        <Text variant="H1_Bold">{format(product.price)}</Text>
+        <Text variant="H1_Bold">
+          <FormattedPrice price={product.price} />
+        </Text>
       </Box>
 
       <Spacing size={5} />

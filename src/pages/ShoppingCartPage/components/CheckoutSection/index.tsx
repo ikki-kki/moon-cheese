@@ -1,7 +1,7 @@
 import type { DeliveryType } from '@/shared/api/schema';
-import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { productMutations } from '@/shared/queries/product';
 import { useCart } from '@/shared/store/cart';
+import { FormattedPrice } from '@/shared/ui/FormattedPrice';
 import { Button, Spacing, Text } from '@/ui-lib';
 import { toast } from '@/ui-lib/components/toast';
 import { useMutation } from '@tanstack/react-query';
@@ -16,7 +16,6 @@ interface Props {
 
 export function CheckoutSection({ shippingFee, deliveryMethod }: Props) {
   const navigate = useNavigate();
-  const { format } = useDisplayPriceFormatter();
   const { cart } = useCart();
 
   const { mutate, isPending } = useMutation({
@@ -73,7 +72,9 @@ export function CheckoutSection({ shippingFee, deliveryMethod }: Props) {
 
           <HStack justify="space-between">
             <Text variant="H2_Bold">총 금액</Text>
-            <Text variant="H2_Bold">{format(totalPrice)}</Text>
+            <Text variant="H2_Bold">
+              <FormattedPrice price={totalPrice} />
+            </Text>
           </HStack>
         </Stack>
 

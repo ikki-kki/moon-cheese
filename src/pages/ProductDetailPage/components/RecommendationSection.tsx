@@ -1,5 +1,5 @@
 import type { Product } from '@/shared/api/schema';
-import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
+import { FormattedPrice } from '@/shared/ui/FormattedPrice';
 import { Spacing, Text } from '@/ui-lib';
 import { useNavigate } from 'react-router';
 import { HStack, styled } from 'styled-system/jsx';
@@ -11,7 +11,6 @@ interface Props {
 
 export function RecommendationSection({ products }: Props) {
   const navigate = useNavigate();
-  const { format } = useDisplayPriceFormatter();
 
   const handleClickProduct = (productId: number) => {
     navigate(`/product/${productId}`);
@@ -28,7 +27,9 @@ export function RecommendationSection({ products }: Props) {
           <RecommendationProductItem.Root key={product.id} onClick={() => handleClickProduct(product.id)}>
             <RecommendationProductItem.Image src={product.images[0]} alt={product.name} />
             <RecommendationProductItem.Info name={product.name} rating={product.rating} />
-            <RecommendationProductItem.Price>{format(product.price)}</RecommendationProductItem.Price>
+            <RecommendationProductItem.Price>
+              <FormattedPrice price={product.price} />
+            </RecommendationProductItem.Price>
           </RecommendationProductItem.Root>
         ))}
       </HStack>

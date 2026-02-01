@@ -1,8 +1,8 @@
 import type { Product, ProductCategory } from '@/shared/api/schema';
-import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { productQueries } from '@/shared/queries/product';
 import { useCart } from '@/shared/store/cart';
 import { ErrorSection } from '@/shared/ui/ErrorSection';
+import { FormattedPrice } from '@/shared/ui/FormattedPrice';
 import { QuantitiyCounter } from '@/shared/ui/QuantitiyCounter';
 import { SubGNB, Text } from '@/ui-lib';
 import { ErrorBoundary } from '@suspensive/react';
@@ -63,7 +63,6 @@ export function ProductListSection() {
 
 function ProductListItem({ product }: { product: Product }) {
   const navigate = useNavigate();
-  const { format } = useDisplayPriceFormatter();
 
   const handleClickProduct = (productId: number) => {
     navigate(`/product/${productId}`);
@@ -76,7 +75,9 @@ function ProductListItem({ product }: { product: Product }) {
       <ProductItem.Meta>
         <ProductItem.MetaLeft>
           <ProductItem.Rating rating={product.rating} />
-          <ProductItem.Price>{format(product.price)}</ProductItem.Price>
+          <ProductItem.Price>
+            <FormattedPrice price={product.price} />
+          </ProductItem.Price>
         </ProductItem.MetaLeft>
         {(() => {
           switch (product.category) {

@@ -1,7 +1,7 @@
 import type { RecentProduct } from '@/shared/api/schema';
-import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { productQueries } from '@/shared/queries/product';
 import { ErrorSection } from '@/shared/ui/ErrorSection';
+import { FormattedPrice } from '@/shared/ui/FormattedPrice';
 import { Spacing, Text } from '@/ui-lib';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
 import { SuspenseQuery } from '@suspensive/react-query';
@@ -49,8 +49,6 @@ export function RecentPurchaseSection() {
 }
 
 function RecentPurchaseItem({ product }: { product: RecentProduct }) {
-  const { format } = useDisplayPriceFormatter();
-
   return (
     <Flex
       css={{
@@ -69,7 +67,9 @@ function RecentPurchaseItem({ product }: { product: RecentProduct }) {
       />
       <Flex flexDir="column" gap={1}>
         <Text variant="B2_Medium">{product.name}</Text>
-        <Text variant="H1_Bold">{format(product.price)}</Text>
+        <Text variant="H1_Bold">
+          <FormattedPrice price={product.price} />
+        </Text>
       </Flex>
     </Flex>
   );
