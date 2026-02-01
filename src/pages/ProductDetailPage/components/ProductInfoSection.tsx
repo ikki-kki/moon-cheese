@@ -1,55 +1,81 @@
-import { Button, Counter, RatingGroup, Spacing, Text } from '@/ui-lib';
+import type { ProductDetailResponse } from '@/shared/api/schema';
+import { useCart } from '@/shared/store/cart';
+import { FormattedPrice } from '@/shared/ui/FormattedPrice';
+import { QuantitiyCounter } from '@/shared/ui/QuantitiyCounter';
+import { Button, RatingGroup, Spacing, Text } from '@/ui-lib';
 import Tag, { type TagType } from '@/ui-lib/components/tag';
+import { useState } from 'react';
 import { Box, Divider, Flex, Stack, styled } from 'styled-system/jsx';
 
-type ProductInfoSectionProps = {
-  name: string;
-  category: TagType;
-  rating: number;
-  price: number;
-  quantity: number;
-};
+interface Props {
+  product: ProductDetailResponse;
+}
 
-function ProductInfoSection({ name, category, rating, price, quantity }: ProductInfoSectionProps) {
+export function ProductInfoSection({ product }: Props) {
   return (
     <styled.section css={{ bg: 'background.01_white', p: 5 }}>
-      {/* 상품 정보 */}
       <Box>
         <Stack gap={2}>
-          <Tag type={category} />
-          <Text variant="B1_Bold">{name}</Text>
-          <RatingGroup value={rating} readOnly label={`${rating.toFixed(1)}`} />
+          <Tag type={product.category.toLowerCase() as TagType} />
+          <Text variant="B1_Bold">{product.name}</Text>
+          <RatingGroup value={product.rating} readOnly label={`${product.rating.toFixed(1)}`} />
         </Stack>
         <Spacing size={4} />
-        <Text variant="H1_Bold">${price.toFixed(2)}</Text>
+        <Text variant="H1_Bold">
+          <FormattedPrice price={product.price} />
+        </Text>
       </Box>
 
       <Spacing size={5} />
+      <CartActionArea product={product} />
+    </styled.section>
+  );
+}
 
-      {/* 재고 및 수량 조절 */}
+function CartActionArea({ product }: Props) {
+  const { cart } = useCart();
+
+  const cartItem = cart.items.find(p => p.id === product.id);
+  const isInCart = Boolean(cartItem);
+
+  const [localQuantity, setLocalQuantity] = useState(cartItem?.quantity ?? 0);
+
+  const handleIncrease = () => setLocalQuantity(prev => prev + 1);
+  const handleDecrease = () => setLocalQuantity(prev => Math.max(0, prev - 1));
+
+  const handleButtonClick = () => {
+    if (isInCart) {
+      cart.remove(product.id);
+      setLocalQuantity(0);
+    } else {
+      cart.add(product, localQuantity);
+    }
+  };
+
+  return (
+    <>
       <Flex justify="space-between" alignItems="center">
         <Flex alignItems="center" gap={2}>
           <Text variant="C1_Medium">재고</Text>
           <Divider orientation="vertical" color="border.01_gray" h={4} />
           <Text variant="C1_Medium" color="secondary.02_orange">
-            {quantity}EA
+            {product.stock}EA
           </Text>
         </Flex>
-        <Counter.Root>
-          <Counter.Minus onClick={() => {}} disabled={true} />
-          <Counter.Display value={3} />
-          <Counter.Plus onClick={() => {}} />
-        </Counter.Root>
+        <QuantitiyCounter
+          quantity={localQuantity}
+          min={0}
+          max={product.stock}
+          disabled={isInCart}
+          increase={handleIncrease}
+          decrease={handleDecrease}
+        />
       </Flex>
-
       <Spacing size={5} />
 
-      {/* 장바구니 버튼 */}
-      <Button fullWidth color="primary" size="lg">
-        장바구니
+      <Button onClick={handleButtonClick} fullWidth color="primary" size="lg">
+        {isInCart ? '장바구니에서 제거' : '장바구니 담기'}
       </Button>
-    </styled.section>
+    </>
   );
 }
-
-export default ProductInfoSection;

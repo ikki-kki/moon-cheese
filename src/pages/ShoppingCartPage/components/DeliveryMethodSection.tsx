@@ -1,11 +1,16 @@
-import { useState } from 'react';
-import { Flex, Stack, styled } from 'styled-system/jsx';
+import type { DeliveryType } from '@/shared/api/schema';
+import { FormattedPrice } from '@/shared/ui/FormattedPrice';
 import { Spacing, Text } from '@/ui-lib';
 import { DeliveryIcon, RocketIcon } from '@/ui-lib/components/icons';
+import { Flex, Stack, styled } from 'styled-system/jsx';
 
-function DeliveryMethodSection() {
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<string>('Express');
+interface Props {
+  value: DeliveryType;
+  onClick: React.Dispatch<React.SetStateAction<DeliveryType>>;
+  shippingFee: number;
+}
 
+export function DeliveryMethodSection({ shippingFee, value, onClick }: Props) {
   return (
     <styled.section css={{ p: 5, bgColor: 'background.01_white' }}>
       <Text variant="H2_Bold">배송 방식</Text>
@@ -18,16 +23,16 @@ function DeliveryMethodSection() {
           description="3-5일 후 도착 예정"
           icon={<DeliveryIcon size={28} />}
           price={0}
-          isSelected={selectedDeliveryMethod === 'Express'}
-          onClick={() => setSelectedDeliveryMethod('Express')}
+          isSelected={value === 'EXPRESS'}
+          onClick={() => onClick('EXPRESS')}
         />
         <DeliveryItem
           title="Premium"
           description="당일 배송"
           icon={<RocketIcon size={28} />}
-          price={5}
-          isSelected={selectedDeliveryMethod === 'Premium'}
-          onClick={() => setSelectedDeliveryMethod('Premium')}
+          price={shippingFee}
+          isSelected={value === 'PREMIUM'}
+          onClick={() => onClick('PREMIUM')}
         />
       </Stack>
     </styled.section>
@@ -76,10 +81,8 @@ function DeliveryItem({
         </Text>
       </Flex>
       <Text variant="B2_Medium" fontWeight={'semibold'} color={isSelected ? 'neutral.05_white' : 'neutral.01_black'}>
-        {price ? `$${price}` : '무료'}
+        {price ? <FormattedPrice price={price} /> : '무료'}
       </Text>
     </Flex>
   );
 }
-
-export default DeliveryMethodSection;

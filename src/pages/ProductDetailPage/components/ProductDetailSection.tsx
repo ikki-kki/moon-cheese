@@ -1,11 +1,11 @@
 import { Spacing, Text } from '@/ui-lib';
 import { styled } from 'styled-system/jsx';
 
-type ProductDetailSectionProps = {
+interface Props {
   description: string;
-};
+}
 
-function ProductDetailSection({ description }: ProductDetailSectionProps) {
+export function ProductDetailSection({ description }: Props) {
   return (
     <styled.section css={{ bg: 'background.01_white', px: 5, pt: 5, pb: 6 }}>
       <Text variant="H2_Bold">상세 정보</Text>
@@ -18,5 +18,3 @@ function ProductDetailSection({ description }: ProductDetailSectionProps) {
     </styled.section>
   );
 }
-
-export default ProductDetailSection;
