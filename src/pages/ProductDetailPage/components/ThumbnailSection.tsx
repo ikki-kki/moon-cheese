@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { HStack, styled } from 'styled-system/jsx';
 
-type ThumbnailSectionProps = {
+interface Props {
   images: string[];
-};
+}
 
-function ThumbnailSection({ images }: ThumbnailSectionProps) {
+export function ThumbnailSection({ images }: Props) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   return (
@@ -48,5 +48,3 @@ function ThumbnailSection({ images }: ThumbnailSectionProps) {
     </styled.section>
   );
 }
-
-export default ThumbnailSection;

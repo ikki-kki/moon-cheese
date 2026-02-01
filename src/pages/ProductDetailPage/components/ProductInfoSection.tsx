@@ -1,16 +1,17 @@
 import type { ProductDetailResponse } from '@/shared/api/schema';
 import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { useCart } from '@/shared/store/cart';
-import { Button, Counter, RatingGroup, Spacing, Text } from '@/ui-lib';
+import { QuantitiyCounter } from '@/shared/ui/QuantitiyCounter';
+import { Button, RatingGroup, Spacing, Text } from '@/ui-lib';
 import Tag, { type TagType } from '@/ui-lib/components/tag';
 import { useState } from 'react';
 import { Box, Divider, Flex, Stack, styled } from 'styled-system/jsx';
 
-type ProductInfoSectionProps = {
+interface Props {
   product: ProductDetailResponse;
-};
+}
 
-function ProductInfoSection({ product }: ProductInfoSectionProps) {
+export function ProductInfoSection({ product }: Props) {
   const { format } = useDisplayPriceFormatter();
 
   return (
@@ -31,13 +32,16 @@ function ProductInfoSection({ product }: ProductInfoSectionProps) {
   );
 }
 
-const CartActionArea = ({ product }: { product: ProductDetailResponse }) => {
+function CartActionArea({ product }: Props) {
   const { cart } = useCart();
 
   const cartItem = cart.items.find(p => p.id === product.id);
   const isInCart = Boolean(cartItem);
 
   const [localQuantity, setLocalQuantity] = useState(cartItem?.quantity ?? 0);
+
+  const handleIncrease = () => setLocalQuantity(prev => prev + 1);
+  const handleDecrease = () => setLocalQuantity(prev => Math.max(0, prev - 1));
 
   const handleButtonClick = () => {
     if (isInCart) {
@@ -63,8 +67,8 @@ const CartActionArea = ({ product }: { product: ProductDetailResponse }) => {
           min={0}
           max={product.stock}
           disabled={isInCart}
-          increase={() => setLocalQuantity(prev => prev + 1)}
-          decrease={() => setLocalQuantity(prev => Math.max(0, prev - 1))}
+          increase={handleIncrease}
+          decrease={handleDecrease}
         />
       </Flex>
       <Spacing size={5} />
@@ -74,33 +78,4 @@ const CartActionArea = ({ product }: { product: ProductDetailResponse }) => {
       </Button>
     </>
   );
-};
-
-const QuantitiyCounter = ({
-  min,
-  max,
-  disabled,
-  quantity,
-  increase,
-  decrease,
-}: {
-  min: number;
-  max: number;
-  disabled?: boolean;
-  quantity: number;
-  increase: () => void;
-  decrease: () => void;
-}) => {
-  const isMinusDisabled = disabled || quantity <= min;
-  const isPlusDisabled = disabled || quantity >= max;
-
-  return (
-    <Counter.Root>
-      <Counter.Minus onClick={decrease} disabled={isMinusDisabled} />
-      <Counter.Display value={quantity} />
-      <Counter.Plus onClick={increase} disabled={isPlusDisabled} />
-    </Counter.Root>
-  );
-};
-
-export default ProductInfoSection;
+}

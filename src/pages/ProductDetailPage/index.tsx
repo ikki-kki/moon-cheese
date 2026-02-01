@@ -1,15 +1,14 @@
-import ErrorSection from '@/components/ErrorSection';
-import type { Product } from '@/shared/api/schema';
 import { productQueries } from '@/shared/queries/product';
+import { ErrorSection } from '@/shared/ui/ErrorSection';
 import { Spacing } from '@/ui-lib';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
 import { SuspenseQueries, SuspenseQuery } from '@suspensive/react-query';
-import { filter } from 'es-toolkit/compat';
 import { useParams } from 'react-router';
-import ProductDetailSection from './components/ProductDetailSection';
-import ProductInfoSection from './components/ProductInfoSection';
-import RecommendationSection from './components/RecommendationSection';
-import ThumbnailSection from './components/ThumbnailSection';
+import { ProductDetailSection } from './components/ProductDetailSection';
+import { ProductInfoSection } from './components/ProductInfoSection';
+import { RecommendationSection } from './components/RecommendationSection';
+import { ThumbnailSection } from './components/ThumbnailSection';
+import { getRecommendedProducts } from './utils';
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -53,6 +52,3 @@ function ProductDetailPage() {
 }
 
 export default ProductDetailPage;
-
-const getRecommendedProducts = (products: Product[], recommendIds: number[]) =>
-  filter(products, product => recommendIds.includes(product.id));

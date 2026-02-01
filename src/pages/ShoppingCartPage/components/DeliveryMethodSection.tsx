@@ -10,7 +10,7 @@ interface Props {
   shippingFee: number;
 }
 
-function DeliveryMethodSection({ shippingFee, value, onClick }: Props) {
+export function DeliveryMethodSection({ shippingFee, value, onClick }: Props) {
   return (
     <styled.section css={{ p: 5, bgColor: 'background.01_white' }}>
       <Text variant="H2_Bold">배송 방식</Text>
@@ -88,5 +88,3 @@ function DeliveryItem({
     </Flex>
   );
 }
-
-export default DeliveryMethodSection;

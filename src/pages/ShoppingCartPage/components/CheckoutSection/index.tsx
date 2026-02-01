@@ -1,4 +1,4 @@
-import type { DeliveryType, PurchaseRequest } from '@/shared/api/schema';
+import type { DeliveryType } from '@/shared/api/schema';
 import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { productMutations } from '@/shared/queries/product';
 import { useCart } from '@/shared/store/cart';
@@ -7,13 +7,14 @@ import { toast } from '@/ui-lib/components/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { Box, Divider, Flex, HStack, Stack, styled } from 'styled-system/jsx';
+import { makePaymentPayload } from './utils';
 
 interface Props {
   shippingFee: number;
   deliveryMethod: DeliveryType;
 }
 
-function CheckoutSection({ shippingFee, deliveryMethod }: Props) {
+export function CheckoutSection({ shippingFee, deliveryMethod }: Props) {
   const navigate = useNavigate();
   const { format } = useDisplayPriceFormatter();
   const { cart } = useCart();
@@ -32,14 +33,11 @@ function CheckoutSection({ shippingFee, deliveryMethod }: Props) {
 
   const totalPrice = cart.totalPrice + shippingFee;
 
-  const payload: PurchaseRequest = {
+  const payload = makePaymentPayload({
     deliveryType: deliveryMethod,
     totalPrice,
-    items: cart.items.map(item => ({
-      productId: item.id,
-      quantity: item.quantity,
-    })),
-  };
+    item: cart.items,
+  });
 
   return (
     <styled.section css={{ p: 5, bgColor: 'background.01_white' }}>
@@ -90,5 +88,3 @@ function CheckoutSection({ shippingFee, deliveryMethod }: Props) {
     </styled.section>
   );
 }
-
-export default CheckoutSection;

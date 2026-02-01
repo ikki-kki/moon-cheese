@@ -1,14 +1,13 @@
-import ErrorSection from '@/components/ErrorSection';
-import type { GradePointList, GradeType } from '@/shared/api/schema';
 import { gradeQueries } from '@/shared/queries/grade';
 import { meQueries } from '@/shared/queries/me';
+import { ErrorSection } from '@/shared/ui/ErrorSection';
 import { ProgressBar, Spacing, Text } from '@/ui-lib';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
 import { SuspenseQueries } from '@suspensive/react-query';
-import { minBy } from 'es-toolkit';
 import { Box, Flex, styled } from 'styled-system/jsx';
+import { calculateProgressRatio, calculateRemainingPoints, findNextGrade } from './utils';
 
-function CurrentLevelSection() {
+export function CurrentLevelSection() {
   return (
     <styled.section css={{ px: 5, py: 4 }}>
       <Text variant="H1_Bold">현재 등급</Text>
@@ -26,8 +25,8 @@ function CurrentLevelSection() {
 
               const progressRatio = calculateProgressRatio({
                 currentPoint: meData.point,
-                currentGradeMin: pointData.gradePointList.find(g => g.type === meData.grade)?.minPoint ?? 0,
-                nextGradeMin: nextGrade?.minPoint,
+                currentGradeStartPoint: pointData.gradePointList.find(g => g.type === meData.grade)?.minPoint ?? 0,
+                nextGradeStartPoint: nextGrade?.minPoint,
               });
 
               const remainingPoints = calculateRemainingPoints({
@@ -66,46 +65,3 @@ function CurrentLevelSection() {
     </styled.section>
   );
 }
-
-export default CurrentLevelSection;
-
-const findNextGrade = ({
-  currentGrade,
-  gradePointList,
-}: {
-  currentGrade: GradeType;
-  gradePointList: GradePointList[];
-}) => {
-  const currentMin = gradePointList.find(g => g.type === currentGrade)?.minPoint ?? 0;
-
-  return minBy(
-    gradePointList.filter(g => g.minPoint > currentMin),
-    g => g.minPoint
-  );
-};
-
-const calculateRemainingPoints = ({ currentPoint, targetPoint }: { currentPoint: number; targetPoint: number }) => {
-  return Math.max(0, targetPoint - currentPoint);
-};
-
-const calculateProgressRatio = ({
-  currentPoint,
-  currentGradeMin,
-  nextGradeMin,
-}: {
-  currentPoint: number;
-  currentGradeMin: number;
-  nextGradeMin: number | undefined;
-}) => {
-  if (nextGradeMin === undefined) {
-    return 1;
-  }
-
-  const totalRange = nextGradeMin - currentGradeMin;
-  const earnedInRange = currentPoint - currentGradeMin;
-
-  if (totalRange <= 0) {
-    return 1;
-  }
-  return Math.max(0, Math.min(1, earnedInRange / totalRange));
-};

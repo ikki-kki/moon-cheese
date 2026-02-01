@@ -1,13 +1,13 @@
 import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
-import { useCart } from '@/shared/store/cart';
+import { useCart, type CartItemType } from '@/shared/store/cart';
 import Joiner from '@/shared/ui/Joiner';
-import { Button, Counter, Spacing, Text, type TagType } from '@/ui-lib';
+import { QuantitiyCounter } from '@/shared/ui/QuantitiyCounter';
+import { Button, Spacing, Text, type TagType } from '@/ui-lib';
 import { Divider, Flex, Stack, styled } from 'styled-system/jsx';
 import ShoppingCartItem from './ShoppingCartItem';
 
-function ShoppingCartSection() {
+export function ShoppingCartSection() {
   const { cart } = useCart();
-  const { format } = useDisplayPriceFormatter();
 
   return (
     <styled.section css={{ p: 5, bgColor: 'background.01_white' }}>
@@ -30,27 +30,7 @@ function ShoppingCartSection() {
         <Joiner
           divider={<Divider color="border.01_gray" />}
           components={cart.items.map(item => (
-            <ShoppingCartItem.Root>
-              <ShoppingCartItem.Image src={item.images[0]} alt={item.name} />
-              <ShoppingCartItem.Content>
-                <ShoppingCartItem.Info
-                  type={item.category.toLowerCase() as TagType}
-                  title={item.name}
-                  description={item.description}
-                  onDelete={() => cart.remove(item.id)}
-                />
-                <ShoppingCartItem.Footer>
-                  <ShoppingCartItem.Price>{format(item.price)}</ShoppingCartItem.Price>
-                  <QuantitiyCounter
-                    quantity={item.quantity}
-                    min={0}
-                    max={item.stock}
-                    increase={() => cart.increase(item.id)}
-                    decrease={() => cart.decrease(item.id)}
-                  />
-                </ShoppingCartItem.Footer>
-              </ShoppingCartItem.Content>
-            </ShoppingCartItem.Root>
+            <CartItem key={item.id} item={item} />
           ))}
         />
       </Stack>
@@ -58,32 +38,31 @@ function ShoppingCartSection() {
   );
 }
 
-// 3번 이상 반복
-const QuantitiyCounter = ({
-  min,
-  max,
-  disabled,
-  quantity,
-  increase,
-  decrease,
-}: {
-  min: number;
-  max: number;
-  disabled?: boolean;
-  quantity: number;
-  increase: () => void;
-  decrease: () => void;
-}) => {
-  const isMinusDisabled = disabled || quantity <= min;
-  const isPlusDisabled = disabled || quantity >= max;
+function CartItem({ item }: { item: CartItemType }) {
+  const { cart } = useCart();
+  const { format } = useDisplayPriceFormatter();
 
   return (
-    <Counter.Root>
-      <Counter.Minus onClick={decrease} disabled={isMinusDisabled} />
-      <Counter.Display value={quantity} />
-      <Counter.Plus onClick={increase} disabled={isPlusDisabled} />
-    </Counter.Root>
+    <ShoppingCartItem.Root>
+      <ShoppingCartItem.Image src={item.images[0]} alt={item.name} />
+      <ShoppingCartItem.Content>
+        <ShoppingCartItem.Info
+          type={item.category.toLowerCase() as TagType}
+          title={item.name}
+          description={item.description}
+          onDelete={() => cart.remove(item.id)}
+        />
+        <ShoppingCartItem.Footer>
+          <ShoppingCartItem.Price>{format(item.price)}</ShoppingCartItem.Price>
+          <QuantitiyCounter
+            quantity={item.quantity}
+            min={0}
+            max={item.stock}
+            increase={() => cart.increase(item.id)}
+            decrease={() => cart.decrease(item.id)}
+          />
+        </ShoppingCartItem.Footer>
+      </ShoppingCartItem.Content>
+    </ShoppingCartItem.Root>
   );
-};
-
-export default ShoppingCartSection;
+}

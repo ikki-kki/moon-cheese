@@ -1,14 +1,14 @@
-import ErrorSection from '@/components/ErrorSection';
 import type { RecentProduct } from '@/shared/api/schema';
 import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { productQueries } from '@/shared/queries/product';
+import { ErrorSection } from '@/shared/ui/ErrorSection';
 import { Spacing, Text } from '@/ui-lib';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
 import { SuspenseQuery } from '@suspensive/react-query';
-import { groupBy, sumBy } from 'es-toolkit';
 import { Flex, styled } from 'styled-system/jsx';
+import { mergedRecentProducts } from './utils';
 
-function RecentPurchaseSection() {
+export function RecentPurchaseSection() {
   return (
     <styled.section css={{ px: 5, pt: 4, pb: 8 }}>
       <Text variant="H1_Bold">최근 구매한 상품</Text>
@@ -43,8 +43,6 @@ function RecentPurchaseSection() {
   );
 }
 
-export default RecentPurchaseSection;
-
 function RecentPurchaseItem({ product }: { product: RecentProduct }) {
   const { format } = useDisplayPriceFormatter();
 
@@ -71,14 +69,3 @@ function RecentPurchaseItem({ product }: { product: RecentProduct }) {
     </Flex>
   );
 }
-
-const mergeProductGroup = (items: RecentProduct[]): RecentProduct => ({
-  ...items[0],
-  price: sumBy(items, item => item.price),
-});
-
-export const mergedRecentProducts = (products: RecentProduct[]): RecentProduct[] => {
-  const groupedById = groupBy(products, product => product.id);
-
-  return Object.values(groupedById).map(mergeProductGroup);
-};

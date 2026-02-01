@@ -1,11 +1,11 @@
 import { Button, Text } from '@/ui-lib';
 import { Center, styled, VStack } from 'styled-system/jsx';
 
-type ErrorSectionProps = {
+interface Props {
   onRetry?: () => void;
-};
+}
 
-function ErrorSection({ onRetry }: ErrorSectionProps) {
+export function ErrorSection({ onRetry }: Props) {
   return (
     <Center p={5} aspectRatio={1} bgColor="background.01_white" borderRadius="lg">
       <VStack gap={4}>
@@ -20,5 +20,3 @@ function ErrorSection({ onRetry }: ErrorSectionProps) {
     </Center>
   );
 }
-
-export default ErrorSection;

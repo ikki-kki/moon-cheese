@@ -1,19 +1,21 @@
-import ErrorSection from '@/components/ErrorSection';
 import type { Product, ProductCategory } from '@/shared/api/schema';
 import { useDisplayPriceFormatter } from '@/shared/hooks/currency';
 import { productQueries } from '@/shared/queries/product';
 import { useCart } from '@/shared/store/cart';
-import { Counter, SubGNB, Text } from '@/ui-lib';
+import { ErrorSection } from '@/shared/ui/ErrorSection';
+import { QuantitiyCounter } from '@/shared/ui/QuantitiyCounter';
+import { SubGNB, Text } from '@/ui-lib';
 import { ErrorBoundary } from '@suspensive/react';
 import { SuspenseQuery } from '@suspensive/react-query';
 import { Suspense, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Grid, styled } from 'styled-system/jsx';
-import ProductItem from '../components/ProductItem';
+import ProductItem from '../ProductItem';
+import { filterProducts } from './utils';
 
-type CurrentTab = ProductCategory | 'ALL';
+export type CurrentTab = ProductCategory | 'ALL';
 
-function ProductListSection() {
+export function ProductListSection() {
   const [currentTab, setCurrentTab] = useState<CurrentTab>('ALL');
 
   return (
@@ -48,9 +50,8 @@ function ProductListSection() {
   );
 }
 
-const ProductListItem = ({ product }: { product: Product }) => {
+function ProductListItem({ product }: { product: Product }) {
   const navigate = useNavigate();
-
   const { format } = useDisplayPriceFormatter();
 
   const handleClickProduct = (productId: number) => {
@@ -80,9 +81,9 @@ const ProductListItem = ({ product }: { product: Product }) => {
       <CartActionArea product={product} />
     </ProductItem.Root>
   );
-};
+}
 
-const CartActionArea = ({ product }: { product: Product }) => {
+function CartActionArea({ product }: { product: Product }) {
   const { cart } = useCart();
 
   const cartItem = cart.items.find(p => p.id === product.id);
@@ -100,36 +101,4 @@ const CartActionArea = ({ product }: { product: Product }) => {
       decrease={handleDecrease}
     />
   );
-};
-
-const QuantitiyCounter = ({
-  min,
-  max,
-  disabled,
-  quantity,
-  increase,
-  decrease,
-}: {
-  min: number;
-  max: number;
-  disabled?: boolean;
-  quantity: number;
-  increase: () => void;
-  decrease: () => void;
-}) => {
-  const isMinusDisabled = disabled || quantity <= min;
-  const isPlusDisabled = disabled || quantity >= max;
-
-  return (
-    <Counter.Root>
-      <Counter.Minus onClick={decrease} disabled={isMinusDisabled} />
-      <Counter.Display value={quantity} />
-      <Counter.Plus onClick={increase} disabled={isPlusDisabled} />
-    </Counter.Root>
-  );
-};
-
-export default ProductListSection;
-
-const filterProducts = (products: Product[], category: CurrentTab) =>
-  products.filter(product => category === 'ALL' || product.category === category);
+}

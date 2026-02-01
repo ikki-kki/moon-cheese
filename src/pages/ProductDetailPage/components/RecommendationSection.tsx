@@ -5,13 +5,12 @@ import { useNavigate } from 'react-router';
 import { HStack, styled } from 'styled-system/jsx';
 import RecommendationProductItem from './RecommendationProductItem';
 
-interface RecommendationSectionProps {
+interface Props {
   products: Product[];
 }
 
-function RecommendationSection({ products }: RecommendationSectionProps) {
+export function RecommendationSection({ products }: Props) {
   const navigate = useNavigate();
-
   const { format } = useDisplayPriceFormatter();
 
   const handleClickProduct = (productId: number) => {
@@ -36,5 +35,3 @@ function RecommendationSection({ products }: RecommendationSectionProps) {
     </styled.section>
   );
 }
-
-export default RecommendationSection;

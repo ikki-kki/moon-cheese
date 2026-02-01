@@ -2,12 +2,12 @@ import type { Product } from '@/shared/api/schema';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-export type CartItem = Product & {
+export type CartItemType = Product & {
   quantity: number;
 };
 
 interface CartStore {
-  cartItems: CartItem[];
+  cartItems: CartItemType[];
   addToCart: (product: Product, quantity: number) => void;
   removeFromCart: (productId: number) => void;
   increaseQuantity: (productId: number) => void;
