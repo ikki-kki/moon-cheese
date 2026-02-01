@@ -5,6 +5,7 @@ import { ErrorSection } from '@/shared/ui/ErrorSection';
 import { Spacing, Text } from '@/ui-lib';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
 import { SuspenseQuery } from '@suspensive/react-query';
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { Flex, styled } from 'styled-system/jsx';
 import { mergedRecentProducts } from './utils';
 
@@ -14,31 +15,35 @@ export function RecentPurchaseSection() {
       <Text variant="H1_Bold">최근 구매한 상품</Text>
 
       <Spacing size={4} />
-      <ErrorBoundary fallback={<ErrorSection />}>
-        <Suspense>
-          <SuspenseQuery
-            {...productQueries.recent.product.list()}
-            select={data => mergedRecentProducts(data.recentProducts)}
-          >
-            {({ data: products }) => (
-              <Flex
-                css={{
-                  bg: 'background.01_white',
-                  px: 5,
-                  py: 4,
-                  gap: 4,
-                  rounded: '2xl',
-                }}
-                direction={'column'}
+      <QueryErrorResetBoundary>
+        {({ reset }) => (
+          <ErrorBoundary fallback={<ErrorSection onRetry={reset} />}>
+            <Suspense>
+              <SuspenseQuery
+                {...productQueries.recent.product.list()}
+                select={data => mergedRecentProducts(data.recentProducts)}
               >
-                {products.map(product => (
-                  <RecentPurchaseItem key={product.id} product={product} />
-                ))}
-              </Flex>
-            )}
-          </SuspenseQuery>
-        </Suspense>
-      </ErrorBoundary>
+                {({ data: products }) => (
+                  <Flex
+                    css={{
+                      bg: 'background.01_white',
+                      px: 5,
+                      py: 4,
+                      gap: 4,
+                      rounded: '2xl',
+                    }}
+                    direction={'column'}
+                  >
+                    {products.map(product => (
+                      <RecentPurchaseItem key={product.id} product={product} />
+                    ))}
+                  </Flex>
+                )}
+              </SuspenseQuery>
+            </Suspense>
+          </ErrorBoundary>
+        )}
+      </QueryErrorResetBoundary>
     </styled.section>
   );
 }

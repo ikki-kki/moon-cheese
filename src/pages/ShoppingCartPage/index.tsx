@@ -5,6 +5,7 @@ import { useCart } from '@/shared/store/cart';
 import { ErrorSection } from '@/shared/ui/ErrorSection';
 import { ErrorBoundary, Suspense } from '@suspensive/react';
 import { SuspenseQueries } from '@suspensive/react-query';
+import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { useState } from 'react';
 import { styled } from 'styled-system/jsx';
 import { CheckoutSection } from './components/CheckoutSection';
@@ -21,18 +22,22 @@ function ShoppingCartPage() {
 
   return (
     <styled.section css={{ bgColor: 'background.01_white', height: `calc(100vh - ${NAVBAR_HEIGHT}px)` }}>
-      <ErrorBoundary fallback={<ErrorSection />}>
-        <Suspense>
-          {isCartEmpty ? (
-            <EmptyCartSection />
-          ) : (
-            <>
-              <ShoppingCartSection />
-              <PaymentSection />
-            </>
-          )}
-        </Suspense>
-      </ErrorBoundary>
+      <QueryErrorResetBoundary>
+        {({ reset }) => (
+          <ErrorBoundary fallback={<ErrorSection onRetry={reset} />}>
+            <Suspense>
+              {isCartEmpty ? (
+                <EmptyCartSection />
+              ) : (
+                <>
+                  <ShoppingCartSection />
+                  <PaymentSection />
+                </>
+              )}
+            </Suspense>
+          </ErrorBoundary>
+        )}
+      </QueryErrorResetBoundary>
     </styled.section>
   );
 }
