@@ -1,7 +1,7 @@
 import type { DeliveryType, PurchaseRequest } from '@/shared/api/schema';
 import type { CartItemType } from '@/shared/store/cart';
 
-export const makePaymentPayload = ({
+export const createPaymentPayload = ({
   deliveryType,
   totalPrice,
   item,

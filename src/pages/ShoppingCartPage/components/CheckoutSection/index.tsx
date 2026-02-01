@@ -7,7 +7,7 @@ import { toast } from '@/ui-lib/components/toast';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { Box, Divider, Flex, HStack, Stack, styled } from 'styled-system/jsx';
-import { makePaymentPayload } from './utils';
+import { createPaymentPayload } from './utils';
 
 interface Props {
   shippingFee: number;
@@ -32,7 +32,7 @@ export function CheckoutSection({ shippingFee, deliveryMethod }: Props) {
 
   const totalPrice = cart.totalPrice + shippingFee;
 
-  const payload = makePaymentPayload({
+  const payload = createPaymentPayload({
     deliveryType: deliveryMethod,
     totalPrice,
     item: cart.items,
